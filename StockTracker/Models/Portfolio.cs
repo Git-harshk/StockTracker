@@ -1,4 +1,6 @@
-﻿namespace StockTracker.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace StockTracker.Models
 {
     public class Portfolio
     {
@@ -6,7 +8,7 @@
         public string Name { get; set; }
 
         // Foreign key
-        public Guid userId { get; set; }
+        public Guid UserId { get; set; }
 
         //many portfolio -> One User
         public User User { get; set; }
