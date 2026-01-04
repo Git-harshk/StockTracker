@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StockTracker.Data;
+using StockTracker.DTOs;
 using StockTracker.Models;
 using System.Security.Claims;
 
@@ -47,6 +48,11 @@ namespace StockTracker.Controllers
 
             var portfolios = _context.Portfolios
                 .Where(p => p.UserId == userId)
+                .Select(p => new PortfolioDto
+                {
+                    Id = p.Id,
+                    Name = p.Name
+                })
                 .ToList();
 
             return Ok(portfolios);
