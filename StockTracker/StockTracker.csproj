@@ -22,7 +22,6 @@
     <Folder Include="BackgroundJobs\" />
     <Folder Include="Middlewares\" />
     <Folder Include="Repositries\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
 </Project>

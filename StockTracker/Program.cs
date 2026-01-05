@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StockTracker.Auth;
 using StockTracker.Data;
+using StockTracker.Services;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,12 +50,17 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.Configure<JwtSettings>(
     builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddScoped<IAuthService, AuthService>();
 
-builder.Services.AddScoped<TokenService>();
 
 var jwtSettings = builder.Configuration
     .GetSection("JwtSettings")
     .Get<JwtSettings>();
+
+if (jwtSettings == null)
+{
+    throw new Exception("JwtSettings not found in appsettings.json");
+}
 
 builder.Services.AddAuthentication(options =>
 {

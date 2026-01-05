@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using StockTracker.Auth;
 using StockTracker.Data;
 using StockTracker.Models;
+using StockTracker.Services;
 
 namespace StockTracker.Controllers
 {
@@ -11,12 +11,12 @@ namespace StockTracker.Controllers
     public class AuthController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        private readonly TokenService _tokenService;
+        private readonly IAuthService _authService;
 
-        public AuthController(ApplicationDbContext context, TokenService tokenService)
+        public AuthController(ApplicationDbContext context, IAuthService authService)
         {
             _context = context;
-            _tokenService = tokenService;
+            _authService = authService;
         }
 
         [HttpPost("register")]
@@ -25,13 +25,13 @@ namespace StockTracker.Controllers
             if (await _context.Users.AnyAsync(u => u.Email == email))
                 return BadRequest("User already exists");
 
-            var hash = BCrypt.Net.BCrypt.HashPassword(password);
 
             var user = new User
             {
+                Id = Guid.NewGuid(),
                 Name = name,
                 Email = email,
-                PasswordHash = hash
+                PasswordHash = _authService.HashPassword(password)
             };
 
             _context.Users.Add(user);
@@ -47,10 +47,10 @@ namespace StockTracker.Controllers
                 .FirstOrDefaultAsync(u => u.Email == email);
 
             if (user == null ||
-                !BCrypt.Net.BCrypt.Verify(password, user.PasswordHash))
+                !_authService.VerifyPassword(password, user.PasswordHash))
                 return Unauthorized("Invalid credentials");
 
-            var token = _tokenService.GenerateToken(user);
+            var token = _authService.GenerateToken(user);
 
             return Ok(new { token });
         }
