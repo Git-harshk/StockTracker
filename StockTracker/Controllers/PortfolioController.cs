@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using StockTracker.Data;
 using StockTracker.DTOs;
 using StockTracker.Models;
+using StockTracker.Services;
 using System.Security.Claims;
 
 namespace StockTracker.Controllers
@@ -13,10 +14,14 @@ namespace StockTracker.Controllers
     public class PortfolioController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IPortfolioService _portfolioService;
 
-        public PortfolioController(ApplicationDbContext context)
+        public PortfolioController(
+            ApplicationDbContext context,
+            IPortfolioService portfolioService)
         {
             _context = context;
+            _portfolioService = portfolioService;
         }
 
         // Create portfolio
@@ -56,6 +61,17 @@ namespace StockTracker.Controllers
                 .ToList();
 
             return Ok(portfolios);
+        }
+
+        [HttpGet("{portfolioId}/value")]
+        public IActionResult GetPortfolioValue(Guid portfolioId)
+        {
+            var userId = Guid.Parse(
+                User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+            var value = _portfolioService.GetPortfolioValue(portfolioId, userId);
+
+            return Ok(value);
         }
     }
 }
