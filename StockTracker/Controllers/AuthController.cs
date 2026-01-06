@@ -37,7 +37,7 @@ namespace StockTracker.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return Ok("User registered");
+            return StatusCode(201,"User registered");
         }
 
         [HttpPost("login")]

@@ -25,18 +25,15 @@ namespace StockTracker.Controllers
             string stockSymbol,
             int quantity)
         {
-            // 1️⃣ Get logged-in user id from JWT
             var userId = Guid.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            // 2️⃣ Check portfolio belongs to this user
             var portfolio = _context.Portfolios
                 .FirstOrDefault(p => p.Id == portfolioId && p.UserId == userId);
 
             if (portfolio == null)
                 return Unauthorized("Not your portfolio");
 
-            // 3️⃣ Create transaction
             var transaction = new Transaction
             {
                 Id = Guid.NewGuid(),
@@ -56,7 +53,7 @@ namespace StockTracker.Controllers
                 PortfolioId = transaction.PortfolioId
             };
 
-            return Ok(response);
+            return Created("",response);
         }
         [HttpGet("{portfolioId}")]
         public IActionResult GetTransactions(Guid portfolioId)

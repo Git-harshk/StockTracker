@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="BackgroundJobs\" />
-    <Folder Include="Middlewares\" />
     <Folder Include="Repositries\" />
   </ItemGroup>
 

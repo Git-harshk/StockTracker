@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using StockTracker.Auth;
 using StockTracker.Data;
+using StockTracker.Middlewares;
 using StockTracker.Services;
 using System.Text;
 
@@ -98,7 +99,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 🔐 IMPORTANT: Authentication BEFORE Authorization
+app.UseMiddleware<ExceptionMiddleware>();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

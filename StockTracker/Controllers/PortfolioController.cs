@@ -41,13 +41,21 @@ namespace StockTracker.Controllers
             _context.Portfolios.Add(portfolio);
             await _context.SaveChangesAsync();
 
-            return Ok("Portfolio created");
+            return CreatedAtAction(
+                nameof(GetMyPortfolios),
+                new { id = portfolio.Id },
+                new PortfolioDto
+                {
+                    Id = portfolio.Id,
+                    Name = portfolio.Name
+                });
         }
 
         // Get my portfolios
         [HttpGet]
         public IActionResult GetMyPortfolios()
         {
+
             var userId = Guid.Parse(
                 User.FindFirstValue(ClaimTypes.NameIdentifier));
 
